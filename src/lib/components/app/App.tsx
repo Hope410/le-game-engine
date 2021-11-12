@@ -1,25 +1,29 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 
 import { OrthographicCamera as OrthCamera } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 
-import GameMap from '@/lib/components/game-map/GameMap';
+import { CameraControls, GameMap, Player } from '@/lib/components';
 
-function App() {
+import { Loader } from '../loader/Loader';
+
+export function App() {
   return (
     <Canvas>
-      <OrthCamera
-        makeDefault
-        position={[64, 64, 64]}
-        zoom={40}
-        near={0.1}
-        far={3000}
-      />
-      <ambientLight />
-      <pointLight position={[0, 1, 1]} />
-      <GameMap />
+      <Suspense fallback={<Loader />}>
+        <OrthCamera
+          makeDefault
+          position={[64, 64, 64]}
+          zoom={40}
+          near={0.1}
+          far={3000}
+        />
+        <CameraControls />
+        <ambientLight />
+        <pointLight position={[0, 1, 1]} />
+        <Player />
+        <GameMap />
+      </Suspense>
     </Canvas>
   );
 }
-
-export default App;

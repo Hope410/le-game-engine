@@ -3,13 +3,13 @@ import * as React from 'react';
 import { BufferGeometryProps } from '@react-three/fiber';
 import { BufferAttribute, BufferGeometry } from 'three';
 
-import VoxelShape from './models/VoxelShape';
+import { VoxelShape } from './index';
 
 export interface IVoxelGeometryProps extends BufferGeometryProps {
   shape: VoxelShape;
 }
 
-export default function VoxelGeometry(props: IVoxelGeometryProps) {
+export function VoxelGeometry(props: IVoxelGeometryProps) {
   const { positions, normals, indices, uvs } = props.shape.computeData();
   const geometry = new BufferGeometry();
 

@@ -2,7 +2,7 @@ import { MathUtils, Vector3 } from 'three';
 
 import { VOXEL_FACES } from '../const';
 
-export default class VoxelShape {
+export class VoxelShape {
   public size: number;
 
   public tileSize: number;

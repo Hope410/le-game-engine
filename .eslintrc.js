@@ -43,5 +43,6 @@ module.exports = {
     'sort-imports': 'off',
     'no-plusplus': 'off',
     'no-alert': 'off',
+    '@typescript-eslint/no-unused-vars': 'off'
   },
 };

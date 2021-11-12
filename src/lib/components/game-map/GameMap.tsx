@@ -11,14 +11,13 @@ import {
   Vector3,
 } from 'three';
 
-import VoxelShape from '@/lib/components/voxel-geometry/models/VoxelShape';
-import VoxelGeometry from '@/lib/components/voxel-geometry/VoxelGeometry';
+import { VoxelGeometry, VoxelShape } from '@/lib/components/voxel-geometry';
 
 import texturePack from '@/assets/texture-pack.png';
 
 const loader = new TextureLoader();
 
-const GameMap = React.forwardRef<Mesh>((props: MeshProps, ref) => {
+export const GameMap = React.forwardRef<Mesh>((props: MeshProps, ref) => {
   const [texture, setTexture] = useState<Texture>();
   const [shape, setShape] = useState<VoxelShape>();
 
@@ -66,5 +65,3 @@ const GameMap = React.forwardRef<Mesh>((props: MeshProps, ref) => {
     </mesh>
   );
 });
-
-export default GameMap;
