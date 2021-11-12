@@ -1,4 +1,4 @@
-export const VOXEL_FACES = [
+export const VOXEL_FACES = Object.freeze([
   {
     // left
     uvRow: 0,
@@ -65,4 +65,4 @@ export const VOXEL_FACES = [
       { pos: [1, 1, 1], uv: [1, 1] },
     ],
   },
-];
+]);
