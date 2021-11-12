@@ -1,6 +1,6 @@
-import _ from "lodash";
-import { Vector3Tuple, MathUtils, Vector3 } from "three";
-import { VOXEL_FACES } from "../const";
+import { MathUtils, Vector3 } from 'three';
+
+import { VOXEL_FACES } from '../const';
 
 export default class VoxelShape {
   public size: number;
@@ -59,7 +59,7 @@ export default class VoxelShape {
 
           if (!voxel) continue;
 
-          const uvVoxel = voxel - 1;
+          const uvCell = voxel - 1;
 
           VOXEL_FACES.forEach(({ dir, corners, uvRow }) => {
             const neighbor = this.getVoxel(
@@ -74,7 +74,7 @@ export default class VoxelShape {
               positions.push(pos[0] + x, pos[1] + y, pos[2] + z);
               normals.push(...dir);
               uvs.push(
-                ((uvVoxel + uv[0]) * tileSize) / tileTextureWidth,
+                ((uvCell + uv[0]) * tileSize) / tileTextureWidth,
                 1 - ((uvRow + 1 - uv[1]) * tileSize) / tileTextureHeight
               );
             }

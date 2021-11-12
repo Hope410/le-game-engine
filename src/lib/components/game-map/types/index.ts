@@ -1,5 +1,6 @@
-import { Vector2Tuple } from "three";
-import { Direction } from "@/lib/types";
+import { Vector2Tuple } from 'three';
+
+import { Direction } from '@/lib/types';
 
 export interface GameMapConfig {
   width: number;
@@ -9,21 +10,21 @@ export interface GameMapConfig {
 }
 
 export type GameMapTopology =
-  | "plane"
-  | "horizontal-circle"
-  | "vertical-circle"
-  | "torus";
+  | 'plane'
+  | 'horizontal-circle'
+  | 'vertical-circle'
+  | 'torus';
 
 export enum GameMapLayerType {
-    FLOOR,
-    WALLS,
-    FLOOR_ITEMS,
-    CHARACTERS,
-    CEIL_ITEMS,
+  FLOOR,
+  WALLS,
+  FLOOR_ITEMS,
+  CHARACTERS,
+  CEIL_ITEMS,
 }
 
 export interface GameMapBlock {
-    layerType: GameMapLayerType;
-    position: Vector2Tuple;
-    colliders: Direction[];
+  layerType: GameMapLayerType;
+  position: Vector2Tuple;
+  colliders: Direction[];
 }

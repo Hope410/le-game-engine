@@ -1,1 +1,1 @@
-import('./main').then(({ default: main }) => main())
+import('./main').then(({ default: main }) => main());
