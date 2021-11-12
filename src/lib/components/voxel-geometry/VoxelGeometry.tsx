@@ -8,7 +8,7 @@ export interface IVoxelGeometryProps extends BufferGeometryProps {
 }
 
 export function VoxelGeometry (props: IVoxelGeometryProps) {
-  const {positions, normals, indices} = props.shape.computeData();
+  const {positions, normals, indices, uvs} = props.shape.computeData();
   const geometry = new BufferGeometry();
   
   geometry.setAttribute(
@@ -17,6 +17,9 @@ export function VoxelGeometry (props: IVoxelGeometryProps) {
   geometry.setAttribute(
       'normal',
       new BufferAttribute(new Float32Array(normals), 3));
+  geometry.setAttribute(
+      'uv',
+      new BufferAttribute(new Float32Array(uvs), 2));
   geometry.setIndex(indices);
 
   return (

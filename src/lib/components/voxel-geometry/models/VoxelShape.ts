@@ -1,41 +1,38 @@
+import _ from "lodash";
 import { Vector3Tuple, MathUtils, Vector3 } from "three";
 import { VOXEL_FACES } from "../const";
 
 export default class VoxelShape {
-  public width: number;
+  public size: number;
 
-  public height: number;
+  public tileSize: number;
 
-  public length: number;
+  public tileTextureWidth: number;
+
+  public tileTextureHeight: number;
 
   private shape: Uint8Array;
 
-  constructor(options: { width: number; height: number; length: number }) {
-    this.width = options.width;
-    this.height = options.height;
-    this.length = options.length;
-
-    this.shape = new Uint8Array(
-      options.width * options.height * options.length
-    );
+  constructor(options: {
+    size: number;
+    tileSize: number;
+    tileTextureWidth: number;
+    tileTextureHeight: number;
+  }) {
+    this.size = options.size;
+    this.tileSize = options.tileSize;
+    this.tileTextureWidth = options.tileTextureWidth;
+    this.tileTextureHeight = options.tileTextureHeight;
+    this.shape = new Uint8Array(this.size ** 3);
   }
 
-  computeVoxelOffset({x, y, z}: Vector3) {
-    const { width, height, length } = this;
-    const voxelX = MathUtils.euclideanModulo(x, width) || 0;
-    const voxelY = MathUtils.euclideanModulo(y, height) || 0;
-    const voxelZ = MathUtils.euclideanModulo(z, length) || 0;
+  private computeVoxelOffset({ x, y, z }: Vector3) {
+    const { size } = this;
+    const voxelX = MathUtils.euclideanModulo(x, size) | 0;
+    const voxelY = MathUtils.euclideanModulo(y, size) | 0;
+    const voxelZ = MathUtils.euclideanModulo(z, size) | 0;
 
-    return voxelY * width * height + voxelZ * length + voxelX;
-  }
-
-  computeVector(offset: number): Vector3 {
-    const { width, height, length } = this;
-    const x = Math.floor((offset % (width * height)) % length);
-    const y = Math.floor(offset / (width * height));
-    const z = Math.floor((offset % (width * height)) / length);
-
-    return new Vector3(x, y, z);
+    return voxelY * size ** 2 + voxelZ * size + voxelX;
   }
 
   setVoxel(vector: Vector3, value: number) {
@@ -49,37 +46,50 @@ export default class VoxelShape {
   }
 
   computeData() {
+    const { size, tileSize, tileTextureWidth, tileTextureHeight } = this;
     const positions: number[] = [];
     const normals: number[] = [];
+    const uvs: number[] = [];
     const indices: number[] = [];
 
-    [...this.shape.keys()].forEach((index) => {
-      const {x, y, z} = this.computeVector(index);
+    for (let x = 0; x < size; x++) {
+      for (let y = 0; y < size; y++) {
+        for (let z = 0; z < size; z++) {
+          const voxel = this.getVoxel(new Vector3(x, y, z));
 
-      const voxel = this.getVoxel(new Vector3(x, y, z));
+          if (!voxel) continue;
 
-      if (!voxel) return;
+          const uvVoxel = voxel - 1;
 
-      VOXEL_FACES.forEach(({ dir, corners }) => {
-        const neighbor = this.getVoxel(new Vector3(x + dir[0], y + dir[1], z + dir[2]));
+          VOXEL_FACES.forEach(({ dir, corners, uvRow }) => {
+            const neighbor = this.getVoxel(
+              new Vector3(x + dir[0], y + dir[1], z + dir[2])
+            );
 
-        if (neighbor) return;
+            if (neighbor) return;
 
-        const ndx = positions.length / 3; // position index
+            const ndx = positions.length / 3; // position index
 
-        for (const pos of corners) {
-          positions.push(pos[0] + x, pos[1] + y, pos[2] + z);
-          normals.push(...dir);
+            for (const { pos, uv } of corners) {
+              positions.push(pos[0] + x, pos[1] + y, pos[2] + z);
+              normals.push(...dir);
+              uvs.push(
+                ((uvVoxel + uv[0]) * tileSize) / tileTextureWidth,
+                1 - ((uvRow + 1 - uv[1]) * tileSize) / tileTextureHeight
+              );
+            }
+
+            indices.push(ndx, ndx + 1, ndx + 2, ndx + 2, ndx + 1, ndx + 3);
+          });
         }
-
-        indices.push(ndx, ndx + 1, ndx + 2, ndx + 2, ndx + 1, ndx + 3);
-      })
-    });
+      }
+    }
 
     return {
       positions,
       normals,
       indices,
+      uvs,
     };
   }
 }
