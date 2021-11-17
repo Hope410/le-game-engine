@@ -1,46 +1,56 @@
 import * as React from 'react';
 
 import { useThree } from '@react-three/fiber';
+import { Vector3 } from 'three';
+
+import { ROTATE_CAMERA_LEFT_BUTTON, ROTATE_CAMERA_RIGHT_BUTTON } from './const';
 
 interface ICameraControlsProps {}
 
-const CAMERA_TARGET_DISTANSE = 64;
-const ROTATE_СLOCKWISE_KEY = 'e';
-const ROTATE_ANTI_СLOCKWISE_KEY = 'q';
+const INITIAL_CAMERA_DIRECTION = Object.freeze(new Vector3(0, 0, 0));
 
+const CAMERA_MAX_DISTANCE = 64;
+const CAMERA_ROTATION_ANGLE = Math.PI / 4;
 const MAX_ANGLE = Math.PI * 2;
 
 export const CameraControls = (props: ICameraControlsProps) => {
-  const [rotationAngle, setRotationAngle] = React.useState(0);
+  const [cameraAngle, setCameraAngle] = React.useState(0);
   const ctx = useThree();
 
-  const cameraRotate = (radAngle: number) => {
-    const angle = (radAngle + rotationAngle) % MAX_ANGLE;
-    setRotationAngle(angle);
-
-    ctx.camera.position.set(
-      Math.sin(angle) * CAMERA_TARGET_DISTANSE,
-      ctx.camera.position.y,
-      Math.cos(angle) * CAMERA_TARGET_DISTANSE
-    );
-    ctx.camera.lookAt(0, 0, 0);
+  const rotateCamera = (value: number) => {
+    setCameraAngle((cameraAngle + value) % MAX_ANGLE);
   };
 
-  const onKeyup = (ev: KeyboardEvent) => {
+  const onKeyUp = (ev: KeyboardEvent) => {
     switch (ev.key) {
-      case ROTATE_СLOCKWISE_KEY:
-        cameraRotate(Math.PI / 4);
+      case ROTATE_CAMERA_LEFT_BUTTON:
+        rotateCamera(-CAMERA_ROTATION_ANGLE);
         break;
-      case ROTATE_ANTI_СLOCKWISE_KEY:
-        cameraRotate(-Math.PI / 4);
+      case ROTATE_CAMERA_RIGHT_BUTTON:
+        rotateCamera(CAMERA_ROTATION_ANGLE);
         break;
     }
   };
 
   React.useEffect(() => {
-    window.addEventListener('keyup', onKeyup);
+    const angleSin = Math.sin(cameraAngle);
+    const angleCos = Math.cos(cameraAngle);
 
-    return () => window.removeEventListener('keyup', onKeyup);
-  }, [rotationAngle]);
+    ctx.camera.position.set(
+      angleSin * CAMERA_MAX_DISTANCE,
+      CAMERA_MAX_DISTANCE,
+      angleCos * CAMERA_MAX_DISTANCE
+    );
+    ctx.camera.lookAt(INITIAL_CAMERA_DIRECTION);
+  }, [cameraAngle]);
+
+  React.useEffect(() => {
+    ctx.camera.lookAt(INITIAL_CAMERA_DIRECTION);
+
+    window.addEventListener('keyup', onKeyUp);
+
+    return () => window.removeEventListener('keyup', onKeyUp);
+  }, [cameraAngle]);
+
   return null;
 };

@@ -1,6 +1,6 @@
 import { MathUtils, Vector3 } from 'three';
 
-import { VOXEL_FACES } from '../const';
+import { VOXEL_FACES } from '../const/const';
 
 export class VoxelShape {
   public size: number;
