@@ -1,30 +1,19 @@
-import { Vector2Tuple } from 'three';
+import { Texture } from 'three';
 
-import { Direction } from '@/lib/types';
-
-export interface GameMapConfig {
-  width: number;
-  height: number;
-  topology: GameMapTopology;
+export interface GameMapLayer {
+  name: string;
   blocks: GameMapBlock[];
 }
 
-export type GameMapTopology =
-  | 'plane'
-  | 'horizontal-circle'
-  | 'vertical-circle'
-  | 'torus';
-
-export enum GameMapLayerType {
-  FLOOR,
-  WALLS,
-  FLOOR_ITEMS,
-  CHARACTERS,
-  CEIL_ITEMS,
+export interface GameMapBlock {
+  type: string;
+  index: number;
+  texture: Texture;
 }
 
-export interface GameMapBlock {
-  layerType: GameMapLayerType;
-  position: Vector2Tuple;
-  colliders: Direction[];
+export interface TextMapOptions {
+  layers: GameMapLayer[];
+  symbols: {
+    [symbol: string]: GameMapBlock;
+  };
 }

@@ -12,40 +12,18 @@ import {
 } from 'three';
 
 import { VoxelGeometry, VoxelShape } from '@/lib/components/voxel-geometry';
+import { ObjectType } from '@/lib/types';
 
 import texturePack from '@/assets/texture-pack.png';
 
 const loader = new TextureLoader();
 
-export const GameMap = React.forwardRef<Mesh>((props: MeshProps, ref) => {
+export interface IGameMapProps extends MeshProps {
+  shape: VoxelShape;
+}
+
+export const GameMap = React.forwardRef<Mesh, IGameMapProps>((props, ref) => {
   const [texture, setTexture] = useState<Texture>();
-  const [shape, setShape] = useState<VoxelShape>();
-
-  const buildVoxelShape = () => {
-    const size = 64;
-    const tileSize = 16;
-    const tileTextureWidth = 256;
-    const tileTextureHeight = 64;
-
-    const newShape = new VoxelShape({
-      size,
-      tileSize,
-      tileTextureWidth,
-      tileTextureHeight,
-    });
-
-    for (let x = 0; x < size; x++) {
-      for (let z = 0; z < size; z++) {
-        for (let y = 0; y < size; y++) {
-          if (y < Math.floor((x + z) / 2)) {
-            newShape.setVoxel(new Vector3(x, y, z), 16);
-          }
-        }
-      }
-    }
-
-    setShape(newShape);
-  };
 
   useEffect(() => {
     const tex = loader.load(texturePack);
@@ -56,11 +34,9 @@ export const GameMap = React.forwardRef<Mesh>((props: MeshProps, ref) => {
     setTexture(tex);
   }, []);
 
-  useEffect(buildVoxelShape, [texture]);
-
-  return _.isNil(shape) || _.isNil(texture) ? null : (
-    <mesh ref={ref} {...props}>
-      <VoxelGeometry shape={shape} />
+  return _.isNil(texture) ? null : (
+    <mesh type={ObjectType.GAME_MAP} ref={ref} {...props}>
+      <VoxelGeometry shape={props.shape} />
       <meshStandardMaterial map={texture} side={DoubleSide} />
     </mesh>
   );
