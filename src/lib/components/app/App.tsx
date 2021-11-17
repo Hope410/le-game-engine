@@ -22,7 +22,6 @@ export function App() {
         <ambientLight />
         <pointLight position={[0, 1, 1]} />
         <Player />
-        <GameMap />
       </Suspense>
     </Canvas>
   );
