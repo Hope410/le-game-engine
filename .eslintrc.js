@@ -6,8 +6,8 @@ module.exports = {
     es6: true,
   },
   parser: '@typescript-eslint/parser',
-  plugins: ['react', 'prettier', '@typescript-eslint', 'simple-import-sort'],
-  extends: ['prettier', 'airbnb-typescript', 'plugin:prettier/recommended'],
+  plugins: ['prettier', '@typescript-eslint', 'simple-import-sort'],
+  extends: ['prettier', 'airbnb-typescript/base', 'plugin:prettier/recommended'],
   parserOptions: {
     parser: '@typescript-eslint/parser',
     ecmaVersion: 2021,
@@ -28,7 +28,7 @@ module.exports = {
       'error',
       {
         groups: [
-          ['^react|lodash'],
+          ['^three|lodash'],
           ['^@?\\w'],
           ['^@/lib(/.*|$)'],
           ['^@/assets(/.*|$)'],
@@ -43,6 +43,31 @@ module.exports = {
     'sort-imports': 'off',
     'no-plusplus': 'off',
     'no-alert': 'off',
-    '@typescript-eslint/no-unused-vars': 'off'
+    '@typescript-eslint/no-unused-vars': 'off',
+    '@typescript-eslint/naming-convention': [
+      'warn',
+        {
+          selector: 'default',
+          format: ['camelCase', 'UPPER_CASE'],
+          leadingUnderscore: 'allow',
+          trailingUnderscore: 'allow',
+        },
+        {
+          selector: 'variable',
+          format: ['camelCase', 'PascalCase', 'UPPER_CASE'],
+          leadingUnderscore: 'allow',
+          trailingUnderscore: 'allow',
+        },
+        {
+          selector: 'function',
+          format: ['camelCase', 'PascalCase', 'UPPER_CASE'],
+          leadingUnderscore: 'allow',
+          trailingUnderscore: 'allow',
+        },
+        {
+          selector: 'typeLike',
+          format: ['PascalCase'],
+        },
+    ]
   },
 };

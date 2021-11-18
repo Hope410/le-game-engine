@@ -30,6 +30,6 @@
   useEffect(buildVoxelShape, [texture]);
  */
 
-export default class GameMapModel {
+export class GameMap {
   static fromText(textMap: string) {}
 }
